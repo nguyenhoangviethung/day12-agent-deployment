@@ -51,12 +51,12 @@ Chạy được local, nhưng chưa production-ready vì còn hardcoded secrets/
 
 ### Exercise 3.1: Railway deployment
 - URL: https://day12-00164-production.up.railway.app
-- Screenshot: [pending — please provide file path for the screenshot]
+- Screenshot: `static/03/part3-railway-dashboard.png`
 - Test (curl): `/health` returns `{"status":"ok"}` and `/ask` returns 200 with mock response.
 
 #### Screenshot evidence
-- `screenshots/part3-railway-dashboard.png`: ![alt text](image.png)
-- `screenshots/part3-health-200.png`: ![alt text](image-3.png)
+- `static/03/part3-railway-dashboard.png`: ![Part 3 Railway dashboard](static/03/part3-railway-dashboard.png)
+- `static/03/part3-health-200.png`: ![Part 3 Health 200](static/03/part3-health-200.png)
 
 ### Exercise 3.2: Render vs Railway config
 - Render (`render.yaml`): blueprint defines a web service + Redis add-on, includes `buildCommand`, `startCommand`, `healthCheckPath`, region/plan, autoDeploy, and can auto-generate secrets (e.g., `AGENT_API_KEY`).
@@ -127,8 +127,8 @@ In 04-api-gateway/production/cost_guard.py:
 - `record_usage()` increments token counts and cost, tracks per-user usage and global cost.
 
 #### Screenshot evidence (đặt cuối Part 4)
+- `static/04/part4-token-issue-200.png`: ![Part 4 Token Issue 200](static/04/part4-token-issue-200.png)
 - `screenshots/part4-auth-required-401.png`: Gọi API không có token/API key và nhận 401.
-- `screenshots/part4-token-issue-200.png`: Kết quả tạo token thành công.
 - `screenshots/part4-rate-limit-429.png`: Kết quả khi vượt giới hạn request.
 - `screenshots/part4-usage-endpoint-200.png`: Kết quả endpoint usage trả 200.
 
@@ -219,10 +219,12 @@ Non-functional:
 	- `POST /ask` với API key hợp lệ trả 200 và response JSON đúng format
 
 #### Screenshot evidence (đặt cuối Part 6)
-![alt text](image-7.png)
-- `screenshots/part6-railway-deploy-success.png`: ![alt text](image-4.png)
-- `screenshots/part6-health-200.png`: ![alt text](image-5.png)
-- `screenshots/part6-ask-200.png`: ![alt text](image-6.png)
+- `static/06/part6-railway-up-log.png`: ![Part 6 Railway Deploy Success](static/06/part6-railway-up-log.png)
+- `static/06/part6-docs-ui.png`: ![Part 6 Swagger Docs](static/06/part6-docs-ui.png)
+- `static/06/part6-health-200.png`: ![Part 6 Health 200](static/06/part6-health-200.png)
+- `static/06/part6-ask-200.png`: ![Part 6 Ask 200](static/06/part6-ask-200.png)
+- `static/06/part6-ready-200.png`: ![Part 6 Ready 200](static/06/part6-ready-200.png)
+- `static/06/part6-root-endpoint-200.png`: ![Part 6 Root Endpoint 200](static/06/part6-root-endpoint-200.png)
 
 ### Notes
 - `OPENAI_API_KEY` chưa set thì app chạy mock LLM (không block deploy).
