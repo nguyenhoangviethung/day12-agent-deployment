@@ -219,9 +219,10 @@ Non-functional:
 	- `POST /ask` với API key hợp lệ trả 200 và response JSON đúng format
 
 #### Screenshot evidence (đặt cuối Part 6)
-- `screenshots/part6-railway-deploy-success.png`: ![alt text](image-2.png)
-- `screenshots/part6-health-200.png`: ![alt text](image-1.png)
-<!-- - `screenshots/part6-ask-200.png`: Gọi `POST /ask` với API key hợp lệ trả 200. -->
+![alt text](image-7.png)
+- `screenshots/part6-railway-deploy-success.png`: ![alt text](image-4.png)
+- `screenshots/part6-health-200.png`: ![alt text](image-5.png)
+- `screenshots/part6-ask-200.png`: ![alt text](image-6.png)
 
 ### Notes
 - `OPENAI_API_KEY` chưa set thì app chạy mock LLM (không block deploy).
