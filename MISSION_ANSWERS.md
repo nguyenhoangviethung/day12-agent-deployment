@@ -176,10 +176,6 @@ Total messages: 10
 ✅ Session history preserved across all instances via Redis!
 ```
 
-#### Screenshot evidence (đặt cuối Part 5)
-- `screenshots/part5-compose-3-agents.png`: `docker compose ps` thể hiện 3 agent instances đang chạy.
-- `screenshots/part5-load-balancing-served-by.png`: Nhiều response có `served_by` khác nhau.
-- `screenshots/part5-stateless-history.png`: Output `python test_stateless.py` cho thấy history được giữ xuyên instance.
 
 ## Part 6: Final Project
 
