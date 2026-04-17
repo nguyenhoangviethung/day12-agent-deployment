@@ -20,7 +20,7 @@ import json
 from datetime import datetime, timezone
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, HTTPException, Depends, Request, Response
+from fastapi import FastAPI, HTTPException, Depends, Request, Response, Body
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 import uvicorn
@@ -170,7 +170,107 @@ class AskResponse(BaseModel):
     storage: str
 
 
-@app.get("/", tags=["Info"])
+class RootResponse(BaseModel):
+    app: str
+    version: str
+    environment: str
+    endpoints: dict[str, str]
+
+
+class HealthChecks(BaseModel):
+    llm: str
+    redis_connected: bool | str
+
+
+class HealthResponse(BaseModel):
+    status: str
+    version: str
+    environment: str
+    uptime_seconds: float
+    total_requests: int
+    checks: HealthChecks
+    timestamp: str
+
+
+class ReadyResponse(BaseModel):
+    ready: bool
+
+
+class MetricsResponse(BaseModel):
+    uptime_seconds: float
+    total_requests: int
+    error_count: int
+    daily_cost_usd: float
+    daily_budget_usd: float
+    budget_used_pct: float
+
+
+ROOT_EXAMPLE = {
+    "app": "Production AI Agent API",
+    "version": "1.0.0",
+    "environment": "development",
+    "endpoints": {
+        "ask": "POST /ask (requires X-API-Key)",
+        "health": "GET /health",
+        "ready": "GET /ready",
+    },
+}
+
+ASK_REQUEST_EXAMPLE = {
+    "question": "What is this API used for?",
+    "user_id": "demo-user-01",
+}
+
+ASK_RESPONSE_EXAMPLE = {
+    "question": "What is this API used for?",
+    "answer": "This API demonstrates a production-ready AI agent pattern.",
+    "model": "mock-llm",
+    "timestamp": "2026-04-18T09:30:00+00:00",
+    "user_id": "demo-user-01",
+    "history_count": 2,
+    "storage": "memory",
+}
+
+HEALTH_EXAMPLE = {
+    "status": "ok",
+    "version": "1.0.0",
+    "environment": "development",
+    "uptime_seconds": 128.6,
+    "total_requests": 42,
+    "checks": {
+        "llm": "mock",
+        "redis_connected": "not_configured",
+    },
+    "timestamp": "2026-04-18T09:31:12+00:00",
+}
+
+READY_EXAMPLE = {"ready": True}
+
+METRICS_EXAMPLE = {
+    "uptime_seconds": 128.6,
+    "total_requests": 42,
+    "error_count": 1,
+    "daily_cost_usd": 0.0024,
+    "daily_budget_usd": 1.0,
+    "budget_used_pct": 0.24,
+}
+
+ERROR_EXAMPLE = {"detail": "Unauthorized"}
+
+
+@app.get(
+    "/",
+    tags=["Info"],
+    summary="Service metadata",
+    description="Returns API name, version, environment, and key endpoints.",
+    response_model=RootResponse,
+    responses={
+        200: {
+            "description": "Basic service information.",
+            "content": {"application/json": {"example": ROOT_EXAMPLE}},
+        }
+    },
+)
 def root():
     return {
         "app": settings.app_name,
@@ -184,10 +284,32 @@ def root():
     }
 
 
-@app.post("/ask", response_model=AskResponse, tags=["Agent"])
+@app.post(
+    "/ask",
+    response_model=AskResponse,
+    tags=["Agent"],
+    summary="Ask the AI agent",
+    description="Sends a question to the agent and returns a mocked answer.",
+    responses={
+        200: {
+            "description": "Mocked AI answer.",
+            "content": {"application/json": {"example": ASK_RESPONSE_EXAMPLE}},
+        },
+        401: {
+            "description": "Missing or invalid API key.",
+            "content": {"application/json": {"example": ERROR_EXAMPLE}},
+        },
+        429: {
+            "description": "Rate limit or budget exceeded.",
+            "content": {
+                "application/json": {"example": {"detail": "Rate limit exceeded"}}
+            },
+        },
+    },
+)
 async def ask_agent(
-    body: AskRequest,
     request: Request,
+    body: AskRequest = Body(..., example=ASK_REQUEST_EXAMPLE),
     api_key: str = Depends(verify_api_key),
 ):
     """Send a question to the AI agent. Requires X-API-Key header."""
@@ -223,7 +345,19 @@ async def ask_agent(
     )
 
 
-@app.get("/health", tags=["Operations"])
+@app.get(
+    "/health",
+    tags=["Operations"],
+    summary="Health check",
+    description="Liveness endpoint with dependency checks.",
+    response_model=HealthResponse,
+    responses={
+        200: {
+            "description": "Service is alive.",
+            "content": {"application/json": {"example": HEALTH_EXAMPLE}},
+        }
+    },
+)
 def health():
     redis_ok = None
     if settings.redis_url:
@@ -251,7 +385,25 @@ def health():
     }
 
 
-@app.get("/ready", tags=["Operations"])
+@app.get(
+    "/ready",
+    tags=["Operations"],
+    summary="Readiness check",
+    description="Readiness probe used by deployment platforms.",
+    response_model=ReadyResponse,
+    responses={
+        200: {
+            "description": "Service can receive traffic.",
+            "content": {"application/json": {"example": READY_EXAMPLE}},
+        },
+        503: {
+            "description": "Service is not ready.",
+            "content": {
+                "application/json": {"example": {"detail": "Redis not available"}}
+            },
+        },
+    },
+)
 def ready():
     if not _is_ready:
         raise HTTPException(503, "Not ready")
@@ -265,7 +417,23 @@ def ready():
     return {"ready": True}
 
 
-@app.get("/metrics", tags=["Operations"])
+@app.get(
+    "/metrics",
+    tags=["Operations"],
+    summary="Runtime metrics",
+    description="Returns request counters and budget usage for the current API key.",
+    response_model=MetricsResponse,
+    responses={
+        200: {
+            "description": "Current runtime and budget metrics.",
+            "content": {"application/json": {"example": METRICS_EXAMPLE}},
+        },
+        401: {
+            "description": "Missing or invalid API key.",
+            "content": {"application/json": {"example": ERROR_EXAMPLE}},
+        },
+    },
+)
 def metrics(api_key: str = Depends(verify_api_key)):
     usage = get_usage(api_key[:8])
     return {

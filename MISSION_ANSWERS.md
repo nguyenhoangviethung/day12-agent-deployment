@@ -56,8 +56,7 @@ Chạy được local, nhưng chưa production-ready vì còn hardcoded secrets/
 
 #### Screenshot evidence
 - `screenshots/part3-railway-dashboard.png`: ![alt text](image.png)
-<!-- - `screenshots/part3-health-200.png`: Terminal chạy `curl <domain>/health` trả JSON có `status: ok`.
-- `screenshots/part3-ask-200.png`: Terminal chạy `POST /ask` trả response 200. -->
+- `screenshots/part3-health-200.png`: ![alt text](image-3.png)
 
 ### Exercise 3.2: Render vs Railway config
 - Render (`render.yaml`): blueprint defines a web service + Redis add-on, includes `buildCommand`, `startCommand`, `healthCheckPath`, region/plan, autoDeploy, and can auto-generate secrets (e.g., `AGENT_API_KEY`).
@@ -222,7 +221,7 @@ Non-functional:
 #### Screenshot evidence (đặt cuối Part 6)
 - `screenshots/part6-railway-deploy-success.png`: ![alt text](image-2.png)
 - `screenshots/part6-health-200.png`: ![alt text](image-1.png)
-- `screenshots/part6-ask-200.png`: Gọi `POST /ask` với API key hợp lệ trả 200.
+<!-- - `screenshots/part6-ask-200.png`: Gọi `POST /ask` với API key hợp lệ trả 200. -->
 
 ### Notes
 - `OPENAI_API_KEY` chưa set thì app chạy mock LLM (không block deploy).
