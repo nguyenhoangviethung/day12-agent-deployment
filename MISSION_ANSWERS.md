@@ -54,10 +54,10 @@ Chạy được local, nhưng chưa production-ready vì còn hardcoded secrets/
 - Screenshot: [pending — please provide file path for the screenshot]
 - Test (curl): `/health` returns `{"status":"ok"}` and `/ask` returns 200 with mock response.
 
-#### Screenshot evidence (đặt ngay dưới Exercise 3.1)
-- `screenshots/part3-railway-dashboard.png`: Trang Railway service hiển thị trạng thái deploy thành công + public domain.
-- `screenshots/part3-health-200.png`: Terminal chạy `curl <domain>/health` trả JSON có `status: ok`.
-- `screenshots/part3-ask-200.png`: Terminal chạy `POST /ask` trả response 200.
+#### Screenshot evidence
+- `screenshots/part3-railway-dashboard.png`: ![alt text](image.png)
+<!-- - `screenshots/part3-health-200.png`: Terminal chạy `curl <domain>/health` trả JSON có `status: ok`.
+- `screenshots/part3-ask-200.png`: Terminal chạy `POST /ask` trả response 200. -->
 
 ### Exercise 3.2: Render vs Railway config
 - Render (`render.yaml`): blueprint defines a web service + Redis add-on, includes `buildCommand`, `startCommand`, `healthCheckPath`, region/plan, autoDeploy, and can auto-generate secrets (e.g., `AGENT_API_KEY`).
@@ -220,8 +220,8 @@ Non-functional:
 	- `POST /ask` với API key hợp lệ trả 200 và response JSON đúng format
 
 #### Screenshot evidence (đặt cuối Part 6)
-- `screenshots/part6-railway-deploy-success.png`: Log `railway up` thành công hoặc dashboard trạng thái live.
-- `screenshots/part6-health-200.png`: Gọi health trên domain Railway trả 200.
+- `screenshots/part6-railway-deploy-success.png`: ![alt text](image-2.png)
+- `screenshots/part6-health-200.png`: ![alt text](image-1.png)
 - `screenshots/part6-ask-200.png`: Gọi `POST /ask` với API key hợp lệ trả 200.
 
 ### Notes
